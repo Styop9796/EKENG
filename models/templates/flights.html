@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Schedule</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flight Schedule</h1>
+
+    <h2>Upcoming Flights</h2>
+    <div id="upcomingFlights"></div>
+
+    <h2>Past Flights</h2>
+    <div id="pastFlights"></div>
+
+</body>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // API URL
+    const apiUrl = 'https://api.url'; // Replace with your API URL
+
+    // Fetch data from the API
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Filter data for upcoming and past flights
+            const now = new Date();
+            const upcomingFlights = data.filter(flight => new Date(flight.arrival_1_date_time) > now);
+            const pastFlights = data.filter(flight => new Date(flight.arrival_1_date_time) <= now);
+
+            // Display upcoming flights
+            displayFlights('upcomingFlights', 'Upcoming', upcomingFlights);
+
+            // Display past flights
+            displayFlights('pastFlights', 'Past', pastFlights);
+        })
+        .catch(error => {
+            console.error('Error fetching data: ', error);
+        });
+
+    // Function to display flights in a table
+    function displayFlights(containerId, heading, flights) {
+        const container = document.getElementById(containerId);
+
+        if (flights.length === 0) {
+            container.innerHTML = `<p>No ${heading.toLowerCase()} flights available.</p>`;
+            return;
+        }
+
+        const table = document.createElement('table');
+        const tableHeader = `<tr><th>Flight No</th><th>Departure</th><th>Departure Date & Time</th><th>Arrival</th><th>Arrival Date & Time</th></tr>`;
+        let tableRows = '';
+
+        flights.forEach(flight => {
+            const departureDateTime = new Date(flight.departure_1_date_time).toLocaleString();
+            const arrivalDateTime = new Date(flight.arrival_1_date_time).toLocaleString();
+            tableRows += `<tr><td>${flight.flight_no}</td><td>${flight.departure_1}</td><td>${departureDateTime}</td><td>${flight.arrival_1}</td><td>${arrivalDateTime}</td></tr>`;
+        });
+
+        table.innerHTML = tableHeader + tableRows;
+        container.appendChild(table);
+    }
+});
+
+</script>
+</html>
