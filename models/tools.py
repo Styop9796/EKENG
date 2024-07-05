@@ -29,3 +29,11 @@ def categorize_flights(flights):
         elif flight.arrival_1 in armenian_airports and flight.departure_1 in armenian_airports:
             data['in_arm'].append(flight.to_dict())
     return data
+
+
+
+def filter_permission_numbers(data):
+    permissions_dict={}
+    for item in data:
+        permissions_dict[item.permission_no]=str(item.sign_date)
+    return permissions_dict

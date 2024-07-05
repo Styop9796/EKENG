@@ -1,6 +1,4 @@
 from ..models import Flights
-from django.views import View
-from django.shortcuts import render
 from datetime import datetime
 from django.http import JsonResponse,HttpResponse
 from ..tools import categorize_flights

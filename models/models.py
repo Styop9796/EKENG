@@ -35,5 +35,5 @@ class Flights(models.Model):
             'departure_1_date_time': self.departure_1_date_time,
         }
 
-    def get_air_operator_name(self):
-        return self.airoperator_name
+    def get_permission_number_and_date(self):
+        return [self.permission_no,self.sign_date]
