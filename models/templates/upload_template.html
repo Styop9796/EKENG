@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Flight Information</title>
+    <title>Տվյալների ներբեռնում</title>
     <style>
         body {
             background-color: #f0f0f0;
@@ -68,7 +68,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Upload Flight Information</h2>
+        <h2>Վերբեռնեք թռիչքների տվյալները</h2>
 
         <div class="message">
             {% if message %}
@@ -81,9 +81,9 @@
 
         <form id="uploadForm" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             {% csrf_token %}
-            <label for="excelFile">Select Excel File (.xlsx)</label>
+            <label for="excelFile">Վերբեռնեք Excel ֆայլ (.xlsx)</label>
             <input type="file" id="excelFile" name="excelFile" accept=".xlsx">
-            <button type="submit">Upload</button>
+            <button type="submit">Բեռնել</button>
         </form>
     </div>
 
@@ -92,13 +92,13 @@
             var fileInput = document.getElementById('excelFile');
             var file = fileInput.files[0];
             if (!file) {
-                alert('Please select a file to upload.');
+                alert('Խնդրում ենք բեռնել ֆայլ.');
                 return false; // Prevent form submission
             }
             var fileName = file.name;
             var fileExt = fileName.split('.').pop();
             if (fileExt.toLowerCase() !== 'xlsx') {
-                alert('Please upload .xlsx file.');
+                alert('Խնդրում ենք բեռնել .xlsx ֆայլ.');
                 return false; // Prevent form submission
             }
             return true; // Allow form submission
