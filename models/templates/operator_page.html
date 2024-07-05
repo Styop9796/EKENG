@@ -9,10 +9,10 @@
             <h1 style="font-size: 40px">{{ operator }}</h1>
         </div>
 
-    <table>
-    <thead>
+    <p style="font-style: italic;"><b>Անավարտ</b></p>
+    <table id="future_flights">
         <tr>
-            <th>Թռիճքի համար</th>
+            <th>Չվերթ</th>
             <th>Մեկնում</th>
             <th>Ժամանում</th>
             <th>Տեսակ</th>
@@ -21,20 +21,85 @@
             <th>Թույլտվության համար</th>
             <th>Գրանցման երկիր</th>
         </tr>
-    </thead>
-    <tbody>
+
         <tr>
-            <td>Data 1</td>
-            <td>Data 2</td>
-            <td>Data 3</td>
-            <td>Data 4</td>
-            <td>Data 5</td>
-            <td>Data 6</td>
-            <td>Data 7</td>
-            <td>Data 8</td>
+            <th colspan="8" > Դեպի Հայաստան</th>
+
         </tr>
-        <!-- Additional rows can be added here -->
-    </tbody>
+
+        <tr id="to_armenia_future">
+
+
+        </tr>
+
+
+
+        <tr>
+            <th colspan="8" >Հայաստանից դուրս</th>
+        </tr>
+
+        <tr id="from_armenia_future" >
+
+          </tr>
+
+
+        <tr>
+            <th colspan="8" >Հայաստանի տարածքում</th>
+
+        </tr>
+
+        <tr id="in_armenia_future">
+
+
+          </tr>
+</table>
+
+
+
+
+<p style="font-style: italic;"><b>Ավարտված</b></p>
+    <table id="past_flights">
+        <tr>
+            <th>Չվերթ</th>
+            <th>Մեկնում</th>
+            <th>Ժամանում</th>
+            <th>Տեսակ</th>
+            <th>Նախատեսված ժամ</th>
+            <th>Հաշվարկային ժամանակ</th>
+            <th>Թույլտվության համար</th>
+            <th>Գրանցման երկիր</th>
+        </tr>
+
+        <tr>
+            <th colspan="8" > Դեպի Հայաստան</th>
+
+        </tr>
+
+        <tr id="to_armenia_past">
+
+
+        </tr>
+
+
+
+        <tr>
+            <th colspan="8" >Հայաստանից դուրս</th>
+        </tr>
+
+        <tr id="from_armenia_past" >
+
+          </tr>
+
+
+        <tr>
+            <th colspan="8" >Հայաստանի տարածքում</th>
+
+        </tr>
+
+        <tr id="in_armenia_past">
+
+
+          </tr>
 </table>
 
 
@@ -72,4 +137,96 @@
         background-color: darkgrey;
     }
 </style>
+
+
+
+<script>
+
+
+    function formatDateTime(dateTimeStr) {
+    const dateTime = new Date(dateTimeStr);
+    return dateTime.toLocaleString();
+}
+
+
+    function populateCategoryTable(flights, tableId) {
+    const tableBody = document.getElementById(tableId);
+
+    if (!tableBody) {
+        console.error(`Table body not found for ${tableId}`);
+        return;
+    }
+
+    if (flights.length === 0) {
+        // If there are no flights, add a single cell with colspan="8" and a message
+        const noRecordsRow = document.createElement('tr');
+        noRecordsRow.innerHTML = `<td colspan="8">Տվյալներ չեն գտնվել</td>`;
+        tableBody.parentNode.insertBefore(noRecordsRow, tableBody.nextSibling); // Insert no records message before the next sibling (empty "here" row)
+    } else {
+        flights.forEach(function(item) {
+            var row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.flight_no}</td>
+                <td>${item.departure_1}</td>
+                <td>${item.arrival_1}</td>
+                <td>${item.traffic_type}</td>
+                <td>${formatDateTime(item.departure_1_date_time)}</td>
+                <td>${formatDateTime(item.arrival_1_date_time)}</td>
+                <td>${item.permission_no}</td>
+                <td>${item.place_of_business}</td>
+            `;
+            tableBody.parentNode.insertBefore(row, tableBody.nextSibling); // Insert row before the next sibling (empty "here" row)
+        });
+    }
+}
+
+function populateFutureFlightsTables(data) {
+    populateCategoryTable(data.future.to_arm, 'to_armenia_future');
+    populateCategoryTable(data.future.from_arm, 'from_armenia_future');
+    populateCategoryTable(data.future.in_arm, 'in_armenia_future');
+}
+
+function populatePastFlightsTables(data) {
+    populateCategoryTable(data.past.to_arm, 'to_armenia_past');
+    populateCategoryTable(data.past.from_arm, 'from_armenia_past');
+    populateCategoryTable(data.past.in_arm, 'in_armenia_past');
+}
+
+
+const operator_name = window.location.pathname.replace(/^\/|\/$/g, '');
+const baseUrl = window.location.protocol + '//' + window.location.host;
+
+const apiUrl = `${baseUrl}/get/flights/?operator=${operator_name}`;
+    console.log('here')
+
+fetch(apiUrl, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+							.then(response => {
+								if (response.ok) {
+                                    return response.json();
+
+								} else {
+									// Handle error cases if needed
+									console.error('Failed to process the request');
+								}
+							})
+                            .then(data => {
+                                console.log(data)
+                                populateFutureFlightsTables(data);
+                                populatePastFlightsTables(data);
+                               //populateFutureTable(data.future);
+                               //populatePastTable(data.past);
+                            })
+
+							.catch(error => {
+								console.error('Error:', error);
+							});
+
+
+
+    </script>
 </html>

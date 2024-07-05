@@ -12,7 +12,7 @@
     <div class="operator-link">
             {% for operator in air_operators %}
                 <div>
-                 <a href="/get/flights?operator={{ operator }}" >{{ operator }}</a>
+                 <a href="/{{ operator }}" >{{ operator }}</a>
                 </div>
             {% endfor %}
         </div>
