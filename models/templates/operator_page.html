@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Թռիչքներ</title>
+</head>
+<body>
+    <div class="header">
+            <h1 style="font-size: 40px">{{ operator }}</h1>
+        </div>
+
+    <table>
+    <thead>
+        <tr>
+            <th>Թռիճքի համար</th>
+            <th>Մեկնում</th>
+            <th>Ժամանում</th>
+            <th>Տեսակ</th>
+            <th>Նախատեսված ժամ</th>
+            <th>Հաշվարկային ժամանակ</th>
+            <th>Թույլտվության համար</th>
+            <th>Գրանցման երկիր</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+            <td>Data 4</td>
+            <td>Data 5</td>
+            <td>Data 6</td>
+            <td>Data 7</td>
+            <td>Data 8</td>
+        </tr>
+        <!-- Additional rows can be added here -->
+    </tbody>
+</table>
+
+
+</body>
+
+
+<style>
+    .header{
+                 display: grid;
+                align-items: center;
+                text-align: center;
+            }
+
+
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: lightsteelblue;
+    }
+    table tr:hover {
+        background-color: darkgrey;
+    }
+</style>
+</html>
