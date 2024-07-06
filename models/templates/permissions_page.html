@@ -135,10 +135,7 @@
                        <th>Ստորագրման ամսաթիվ</th>
                    </tr>
 
-
-
                </table>
-
             </div>
 
 
@@ -225,6 +222,16 @@ setStartEndDate();
     fetchDataBtn.addEventListener('click', function() {
         const startDate = document.getElementById('start_date').value;
         const endDate = document.getElementById('end_date').value;
+
+        const startDateTime = new Date(startDate);
+        const endDateTime = new Date(endDate);
+
+        // Validate end date is after start date
+        if (endDateTime < startDateTime) {
+            alert('Ավարտի ամսաթիվը պետք է մեծ լինի սկզբի ամսաթիվից');
+            return;
+        }
+
         const apiUrl = `${window.location.href}?start_date=${startDate}&end_date=${endDate}`;
         console.log(apiUrl)
         fetch(apiUrl, {

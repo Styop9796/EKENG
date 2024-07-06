@@ -23,7 +23,31 @@
 
     <div class="header">
             <h1 style="font-size: 30px">{{ operator }}</h1>
+    </div>
+
+
+
+
+<div class="container">
+        <div>
+            <div style="padding: 20px;display: flex;justify-content:space-evenly" >
+                <div>
+                    <label>Սկիզբ ։</label>
+                    <input type="time" id="start_time" value="01:00" >
+                </div>
+                <div>
+                    <label>Ավարտ ։</label>
+                    <input type="time" id="end_time" value="07:00">
+                </div>
+
+                <button type="submit" id="fetchDataBtn">Որոնել</button>
+
+            </div>
+
+
         </div>
+    </div>
+
 
     <p style="font-style: italic;"><b>Անավարտ</b></p>
     <table id="future_flights">
@@ -48,8 +72,6 @@
 
         </tr>
 
-
-
         <tr>
             <th colspan="8" >Հայաստանից դուրս</th>
         </tr>
@@ -57,7 +79,6 @@
         <tr id="from_armenia_future" >
 
           </tr>
-
 
         <tr>
             <th colspan="8" >Հայաստանի տարածքում</th>
@@ -161,11 +182,11 @@
     nav {
     position: fixed;
     top: 0;
-     left: 0;
+    left: 0;
     width: 100%;
     background-color: darkslateblue;
     padding: 10px 0;
-    z-index: 1000; /* Ensures it's above other content */
+    z-index: 1000;
   }
   nav ul {
     list-style-type: none;
@@ -188,6 +209,20 @@
   nav ul li a:hover {
     background-color: lightslategray;
   }
+  button[type=submit] {
+            padding: 5px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.3s;
+        }
+
+  button[type=submit]:hover {
+            background-color: #0056b3;
+        }
 </style>
 
 
@@ -203,6 +238,7 @@
 
     function populateCategoryTable(flights, tableId) {
     const tableBody = document.getElementById(tableId);
+    tableBody.innerHTML = '';
 
     if (!tableBody) {
         console.error(`Table body not found for ${tableId}`);
@@ -267,11 +303,10 @@ fetch(apiUrl, {
 								}
 							})
                             .then(data => {
-                                console.log(data)
+
                                 populateFutureFlightsTables(data);
                                 populatePastFlightsTables(data);
-                               //populateFutureTable(data.future);
-                               //populatePastTable(data.past);
+
                             })
 
 							.catch(error => {
@@ -279,6 +314,134 @@ fetch(apiUrl, {
 							});
 
 
+
+function fetchFlights(operatorName, startTime, endTime) {
+    const baseUrl = window.location.protocol + '//' + window.location.host;
+    const apiUrl = `${baseUrl}/get/flights/?operator=${operatorName}&start_time=${startTime}&end_time=${endTime}`;
+
+    fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to fetch flight data');
+        }
+    })
+    .then(data => {
+        let fut_table = document.getElementById('future_flights');
+                                fut_table.innerHTML=`<tr>
+                                        <th>Չվերթ</th>
+                                        <th>Մեկնում</th>
+                                        <th>Ժամանում</th>
+                                        <th>Տեսակ</th>
+                                        <th>Նախատեսված ժամ</th>
+                                        <th>Հաշվարկային ժամանակ</th>
+                                        <th>Թույլտվության համար</th>
+                                        <th>Գրանցման երկիր</th>
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="8" > Դեպի Հայաստան</th>
+
+                                    </tr>
+
+                                    <tr id="to_armenia_future">
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="8" >Հայաստանից դուրս</th>
+                                    </tr>
+
+                                    <tr id="from_armenia_future" >
+
+                                      </tr>
+
+                                    <tr>
+                                        <th colspan="8" >Հայաստանի տարածքում</th>
+
+                                    </tr>
+
+                                    <tr id="in_armenia_future">
+
+
+                                      </tr>`;
+
+        populateFutureFlightsTables(data);
+
+
+        let past_table = document.getElementById('past_flights');
+        past_table.innerHTML=`<tr>
+                                        <th>Չվերթ</th>
+                                        <th>Մեկնում</th>
+                                        <th>Ժամանում</th>
+                                        <th>Տեսակ</th>
+                                        <th>Նախատեսված ժամ</th>
+                                        <th>Հաշվարկային ժամանակ</th>
+                                        <th>Թույլտվության համար</th>
+                                        <th>Գրանցման երկիր</th>
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="8" > Դեպի Հայաստան</th>
+
+                                    </tr>
+
+                                    <tr id="to_armenia_past">
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="8" >Հայաստանից դուրս</th>
+                                    </tr>
+
+                                    <tr id="from_armenia_past" >
+
+                                      </tr>
+
+                                    <tr>
+                                        <th colspan="8" >Հայաստանի տարածքում</th>
+
+                                    </tr>
+
+                                    <tr id="in_armenia_past">
+
+
+                                      </tr>`;
+
+        console.log(456);
+
+
+
+        populatePastFlightsTables(data);
+        console.log(456);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle error cases if needed
+    });
+}
+
+
+document.getElementById('fetchDataBtn').addEventListener('click', function() {
+
+    const startTime = document.getElementById('start_time').value;
+    const endTime = document.getElementById('end_time').value;
+
+    if (startTime > endTime) {
+        alert('Ավարտի ժամանակը պետք է մեծ լինի սկզբի ժամանակից');
+        return;
+    }
+
+    fetchFlights(operator_name, startTime, endTime);
+});
 
     </script>
 </html>
