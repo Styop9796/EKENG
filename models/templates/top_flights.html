@@ -68,7 +68,7 @@
     width: 100%;
     background-color: darkslateblue;
     padding: 10px 0;
-    z-index: 1000; /* Ensures it's above other content */
+    z-index: 1000;
   }
   nav ul {
     list-style-type: none;
@@ -96,46 +96,13 @@
 
 
 <script>
-
-window.onload = function() {
-
-var chart = new CanvasJS.Chart("chartContainer", {
-	theme: "light2", // "light1", "light2", "dark1", "dark2"
-	exportEnabled: true,
-	animationEnabled: true,
-	title: {
-		text: "5 առավել հաճախ հանդիպող չվերթներ"
-	},
-	data: [{
-		type: "pie",
-		startAngle: 25,
-		toolTipContent: "<b>{label}</b>: {y}%",
-		showInLegend: "true",
-		legendText: "{label}",
-		indexLabelFontSize: 16,
-		indexLabel: "{label} - {y}%",
-		dataPoints: [
-			{ y: 51.08, label: "սսս" },
-			{ y: 27.34, label: "Internet Explorer" },
-			{ y: 10.62, label: "Firefox" },
-			{ y: 5.02, label: "Microsoft Edge" },
-			{ y: 4.07, label: "Safari" }
-
-		]
-	}]
-});
-chart.render();
-
-}
+var apiData = null
 
 
 
 
-const operator_name = window.location.pathname.replace(/^\/|\/$/g, '');
-const baseUrl = window.location.protocol + '//' + window.location.host;
-
-const apiUrl = `${baseUrl}/get/flights/?operator=${operator_name}`;
-    console.log('here')
+const apiUrl = `${window.location.href}api`;
+    console.log(apiUrl)
 
 fetch(apiUrl, {
 						method: 'GET',
@@ -153,11 +120,9 @@ fetch(apiUrl, {
 								}
 							})
                             .then(data => {
-                                console.log(data)
-                                populateFutureFlightsTables(data);
-                                populatePastFlightsTables(data);
-                               //populateFutureTable(data.future);
-                               //populatePastTable(data.past);
+                                apiData = data;
+                                renderChart(apiData);
+
                             })
 
 							.catch(error => {
@@ -165,6 +130,42 @@ fetch(apiUrl, {
 							});
 
 
+
+function renderChart(data) {
+    // Prepare data points array for CanvasJS
+    var dataPoints = [];
+
+    // Iterate over each entry in data and format for CanvasJS
+    Object.keys(data).forEach(function(time) {
+        var count = data[time][0]; // First element is count
+        var label = data[time][1] + " - " + time; // Second element is label
+
+        // Add formatted data point to dataPoints array
+        dataPoints.push({ y: count, label: label });
+    });
+
+    // Configure CanvasJS chart
+    var chart = new CanvasJS.Chart("chartContainer", {
+        theme: "light2", // Theme options: "light1", "light2", "dark1", "dark2"
+        exportEnabled: true,
+        animationEnabled: true,
+        title: {
+            text: "5 առավել հաճախ հանդիպող չվերթներ"
+        },
+        data: [{
+            type: "pie",
+            startAngle: 25,
+            toolTipContent: "<b>{label}</b>: {y}",
+            showInLegend: true,
+            legendText: "{label}",
+            indexLabelFontSize: 16,
+            indexLabel: "{label} - {y}",
+            dataPoints: dataPoints // Assign formatted data points
+        }]
+    });
+
+    chart.render();
+}
 
     </script>
 </html>

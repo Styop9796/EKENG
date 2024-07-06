@@ -37,3 +37,18 @@ class Flights(models.Model):
 
     def get_permission_number_and_date(self):
         return [self.permission_no,self.sign_date]
+
+    def get_route_and_time(self):
+        return (f"{self.departure_1}-{self.arrival_1}",str(self.departure_1_date_time.time()))
+    @classmethod
+    def top_five_flights(self):
+        flights = self.objects.all()
+        flights_counter={}
+
+        for flight in flights:
+            key=flight.get_route_and_time()
+            if flights_counter.get(key):
+                flights_counter[key]+=1
+            else:
+                flights_counter[key]=1
+        return flights_counter
