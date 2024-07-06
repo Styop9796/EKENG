@@ -21,3 +21,7 @@ def air_operator_page(request,operator):
         return render(request,'operator_page.html',{'operator':operator})
     else:
         return HttpResponse(status=404)
+
+
+def top_flights(request):
+    return render(request,'top_flights.html')

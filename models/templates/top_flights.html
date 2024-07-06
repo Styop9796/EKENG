@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Թռիչքներ</title>
+</head>
+<body>
+
+<div>
+    <nav>
+
+        <ul>
+          <li><a href="/">Ավիափոխադրողներ</a></li>
+          <li><a href="/permission/numbers/">Թույլատվություններ</a></li>
+          <li><a href="/top/flights/">Հաճախ հանդիպող չվերթներ</a></li>
+          <li><a href="/load/">Վերբեռնել տվյալներ</a></li>
+        </ul>
+      </nav>
+
+</div>
+
+<div id="chartContainer" style="height: 300px; width: 100%; margin-top: 50px"></div>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+</body>
+
+
+<style>
+    .header{
+                 display: grid;
+                align-items: center;
+                text-align: center;
+                 margin-top:20px;
+            }
+
+
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+    h1 {
+            color: #333;
+        }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: lightsteelblue;
+    }
+    table tr:hover {
+        background-color: darkgrey;
+    }
+
+
+    nav {
+    position: fixed;
+    top: 0;
+     left: 0;
+    width: 100%;
+    background-color: darkslateblue;
+    padding: 10px 0;
+    z-index: 1000; /* Ensures it's above other content */
+  }
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  nav ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+      font-size: medium;
+  }
+  nav ul li a:hover {
+    background-color: lightslategray;
+  }
+</style>
+
+
+
+<script>
+
+window.onload = function() {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	exportEnabled: true,
+	animationEnabled: true,
+	title: {
+		text: "5 առավել հաճախ հանդիպող չվերթներ"
+	},
+	data: [{
+		type: "pie",
+		startAngle: 25,
+		toolTipContent: "<b>{label}</b>: {y}%",
+		showInLegend: "true",
+		legendText: "{label}",
+		indexLabelFontSize: 16,
+		indexLabel: "{label} - {y}%",
+		dataPoints: [
+			{ y: 51.08, label: "սսս" },
+			{ y: 27.34, label: "Internet Explorer" },
+			{ y: 10.62, label: "Firefox" },
+			{ y: 5.02, label: "Microsoft Edge" },
+			{ y: 4.07, label: "Safari" }
+
+		]
+	}]
+});
+chart.render();
+
+}
+
+
+
+
+const operator_name = window.location.pathname.replace(/^\/|\/$/g, '');
+const baseUrl = window.location.protocol + '//' + window.location.host;
+
+const apiUrl = `${baseUrl}/get/flights/?operator=${operator_name}`;
+    console.log('here')
+
+fetch(apiUrl, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+							.then(response => {
+								if (response.ok) {
+                                    return response.json();
+
+								} else {
+									// Handle error cases if needed
+									console.error('Failed to process the request');
+								}
+							})
+                            .then(data => {
+                                console.log(data)
+                                populateFutureFlightsTables(data);
+                                populatePastFlightsTables(data);
+                               //populateFutureTable(data.future);
+                               //populatePastTable(data.past);
+                            })
+
+							.catch(error => {
+								console.error('Error:', error);
+							});
+
+
+
+    </script>
+</html>
