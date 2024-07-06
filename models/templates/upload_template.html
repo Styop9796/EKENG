@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Տվյալների ներբեռնում</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .message {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .message p {
+            font-size: 1.2rem;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        input[type=file] {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        button[type=submit] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
+        }
+        button[type=submit]:hover {
+            background-color: #0056b3;
+        }
+
+        nav {
+    position: fixed;
+    top: 0;
+     left: 0;
+    width: 100%;
+    background-color: darkslateblue;
+    padding: 10px 0;
+    z-index: 1000; /* Ensures it's above other content */
+  }
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  nav ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+      font-size: medium;
+  }
+  nav ul li a:hover {
+    background-color: lightslategray;
+  }
+    </style>
+</head>
+<body>
+
+
+
+<div>
+    <nav>
+
+        <ul>
+          <li><a href="/">Ավիափոխադրողներ</a></li>
+          <li><a href="/permission/numbers/">Թույլատվություններ</a></li>
+          <li><a href="/top/flights/">Հաճախ հանդիպող չվերթներ</a></li>
+          <li><a href="/load/">Վերբեռնել տվյալներ</a></li>
+        </ul>
+      </nav>
+
+</div>
+
+
+
+    <div class="container">
+        <h2>Վերբեռնեք թռիչքների տվյալները</h2>
+
+        <div class="message">
+            {% if message %}
+                <p style="background-color: #d4edda; color: #155724;">{{ message }}</p>
+            {% endif %}
+            {% if error %}
+                <p style="background-color: #f8d7da; color: #721c24;">{{ error }}</p>
+            {% endif %}
+        </div>
+
+        <form id="uploadForm" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <label for="excelFile">Վերբեռնեք Excel ֆայլ (.xlsx)</label>
+            <input type="file" id="excelFile" name="excelFile" accept=".xlsx">
+            <button type="submit">Բեռնել</button>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            var fileInput = document.getElementById('excelFile');
+            var file = fileInput.files[0];
+            if (!file) {
+                alert('Խնդրում ենք բեռնել ֆայլ.');
+                return false; // Prevent form submission
+            }
+            var fileName = file.name;
+            var fileExt = fileName.split('.').pop();
+            if (fileExt.toLowerCase() !== 'xlsx') {
+                alert('Խնդրում ենք բեռնել .xlsx ֆայլ.');
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
+    </script>
+</body>
+</html>

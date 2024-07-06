@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Թռիչքներ</title>
+</head>
+<body>
+
+<div>
+    <nav>
+
+        <ul>
+          <li><a href="/">Ավիափոխադրողներ</a></li>
+          <li><a href="/permission/numbers/">Թույլատվություններ</a></li>
+          <li><a href="/top/flights/">Հաճախ հանդիպող չվերթներ</a></li>
+          <li><a href="/load/">Վերբեռնել տվյալներ</a></li>
+        </ul>
+      </nav>
+
+</div>
+
+<div id="chartContainer" style="height: 300px; width: 100%; margin-top: 50px"></div>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+</body>
+
+
+<style>
+    .header{
+                 display: grid;
+                align-items: center;
+                text-align: center;
+                 margin-top:20px;
+            }
+
+
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+    h1 {
+            color: #333;
+        }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: lightsteelblue;
+    }
+    table tr:hover {
+        background-color: darkgrey;
+    }
+
+
+    nav {
+    position: fixed;
+    top: 0;
+     left: 0;
+    width: 100%;
+    background-color: darkslateblue;
+    padding: 10px 0;
+    z-index: 1000;
+  }
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  nav ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+      font-size: medium;
+  }
+  nav ul li a:hover {
+    background-color: lightslategray;
+  }
+</style>
+
+
+
+<script>
+var apiData = null
+
+
+
+
+const apiUrl = `${window.location.href}api`;
+    console.log(apiUrl)
+
+fetch(apiUrl, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+							.then(response => {
+								if (response.ok) {
+                                    return response.json();
+
+								} else {
+									// Handle error cases if needed
+									console.error('Failed to process the request');
+								}
+							})
+                            .then(data => {
+                                apiData = data;
+                                renderChart(apiData);
+
+                            })
+
+							.catch(error => {
+								console.error('Error:', error);
+							});
+
+
+
+function renderChart(data) {
+    // Prepare data points array for CanvasJS
+    var dataPoints = [];
+
+    // Iterate over each entry in data and format for CanvasJS
+    Object.keys(data).forEach(function(time) {
+        var count = data[time][0]; // First element is count
+        var label = data[time][1] + " - " + time; // Second element is label
+
+        // Add formatted data point to dataPoints array
+        dataPoints.push({ y: count, label: label });
+    });
+
+    // Configure CanvasJS chart
+    var chart = new CanvasJS.Chart("chartContainer", {
+        theme: "light2", // Theme options: "light1", "light2", "dark1", "dark2"
+        exportEnabled: true,
+        animationEnabled: true,
+        title: {
+            text: "5 առավել հաճախ հանդիպող չվերթներ"
+        },
+        data: [{
+            type: "pie",
+            startAngle: 25,
+            toolTipContent: "<b>{label}</b>: {y}",
+            showInLegend: true,
+            legendText: "{label}",
+            indexLabelFontSize: 16,
+            indexLabel: "{label} - {y}",
+            dataPoints: dataPoints // Assign formatted data points
+        }]
+    });
+
+    chart.render();
+}
+
+    </script>
+</html>

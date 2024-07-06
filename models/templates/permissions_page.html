@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Թույլտվություններ</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+
+
+        label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        button[type=submit] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
+        }
+        button[type=submit]:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: lightsteelblue;
+    }
+    table tr:hover {
+        background-color: darkgrey;
+    }
+
+
+    nav {
+    position: fixed;
+    top: 0;
+     left: 0;
+    width: 100%;
+    background-color: darkslateblue;
+    padding: 10px 0;
+    z-index: 1000; /* Ensures it's above other content */
+  }
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  nav ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+      font-size: medium;
+  }
+  nav ul li a:hover {
+    background-color: lightslategray;
+  }
+    </style>
+</head>
+<body>
+
+<div>
+    <nav>
+
+        <ul>
+          <li><a href="/">Ավիափոխադրողներ</a></li>
+          <li><a href="/permission/numbers/">Թույլատվություններ</a></li>
+          <li><a href="/top/flights/">Հաճախ հանդիպող չվերթներ</a></li>
+          <li><a href="/load/">Վերբեռնել տվյալներ</a></li>
+        </ul>
+      </nav>
+
+</div>
+
+
+
+    <div class="container">
+        <h2>Նշեք ժամանակահատվածը թույլտվությունների տվյալները տեսնելու համար</h2>
+        <div>
+            <div style="padding: 20px;display: flex;justify-content:space-evenly" >
+                <div>
+                    <label>Սկիզբ ։</label>
+                    <input type="date" id="start_date">
+                </div>
+                <div>
+                    <label>Ավարտ ։</label>
+                    <input type="date" id="end_date">
+                </div>
+            </div>
+            <div style="padding: 20px;display: flex;justify-content:space-evenly">
+                <button type="submit" id="fetchDataBtn">Որոնել</button>
+            </div>
+
+            <div id="for_records" style="">
+               <table id="permissionsTable">
+                   <tr>
+                       <th>Թույլտվության համար</th>
+                       <th>Ստորագրման ամսաթիվ</th>
+                   </tr>
+
+               </table>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</body>
+
+<script>
+    function setStartEndDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // Month index (0 for January, 11 for December)
+
+    // First day of current month
+    const firstDayOfMonth = new Date(year, month, 1);
+    const formattedFirstDay = formatDate(firstDayOfMonth);
+
+    // Last day of current month
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    const formattedLastDay = formatDate(lastDayOfMonth);
+
+    // Set the value of the start date and end date input elements
+    document.getElementById('start_date').value = formattedFirstDay;
+    document.getElementById('end_date').value = formattedLastDay;
+}
+
+function formatDate(date) {
+    const year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString(); // Months are zero indexed
+    let day = date.getDate().toString();
+
+    if (month.length === 1) {
+        month = '0' + month;
+    }
+    if (day.length === 1) {
+        day = '0' + day;
+    }
+
+    return `${year}-${month}-${day}`;
+}
+
+// Call the function to set both start and end dates when needed
+setStartEndDate();
+
+
+    function formatDateTime(dateTimeStr) {
+        const dateTime = new Date(dateTimeStr);
+        return dateTime.toLocaleString();
+}
+// Function to populate the permissions table
+    function populatePermissionsTable(data) {
+        // Select the table element to populate
+        const permissionsTable = document.getElementById('permissionsTable');
+        console.log(permissionsTable)
+        while (permissionsTable.rows.length > 1) {
+            permissionsTable.deleteRow(1);
+        }
+        // Populate the table with fetched data
+        Object.entries(data).forEach(([key, value]) => {
+            console.log(key,value)
+            const row = document.createElement('tr');
+
+            // Create cells for permission number and signature date
+            const permissionCell = document.createElement('td');
+            permissionCell.textContent = key; // Assuming key is permission number
+            row.appendChild(permissionCell);
+
+            const signatureDateCell = document.createElement('td');
+            signatureDateCell.textContent = value; // Assuming value is signature date
+            row.appendChild(signatureDateCell);
+
+            // Append row to the table body
+            permissionsTable.appendChild(row);
+        });
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const fetchDataBtn = document.getElementById('fetchDataBtn');
+
+    fetchDataBtn.addEventListener('click', function() {
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+
+        const startDateTime = new Date(startDate);
+        const endDateTime = new Date(endDate);
+
+        // Validate end date is after start date
+        if (endDateTime < startDateTime) {
+            alert('Ավարտի ամսաթիվը պետք է մեծ լինի սկզբի ամսաթիվից');
+            return;
+        }
+
+        const apiUrl = `${window.location.href}?start_date=${startDate}&end_date=${endDate}`;
+        console.log(apiUrl)
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+
+                if (response.ok) {
+                    return response.json();
+
+                } else {
+                    console.error('Failed to process the request');
+                }
+            })
+            .then(data => {
+                console.log(data)
+                const permissionsTable = document.getElementById('permissionsTable');
+                console.log(permissionsTable)
+                populatePermissionsTable(data);
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
+
+
+</html>
