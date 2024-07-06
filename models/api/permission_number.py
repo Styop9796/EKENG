@@ -6,6 +6,11 @@ from django.http import JsonResponse
 
 
 def get_permission_numbers(request):
+    """ query_param: start_date
+        query_param: end_date
+        if parameters passed returns API
+        else just rendering page
+                                        """
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     dt_start_date_with_time = None

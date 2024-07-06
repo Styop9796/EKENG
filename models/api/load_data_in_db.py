@@ -8,6 +8,9 @@ from ..tools import parse_datetime
 
 # Create your views here.
 def load_data_from_excel(request):
+    """ Inserts rows into database,
+        expecting excel file to be uploaded
+        """
     if request.method == 'POST':
         excel_file = request.FILES['excelFile']
         try:

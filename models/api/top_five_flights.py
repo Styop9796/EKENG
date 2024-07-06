@@ -3,6 +3,7 @@ from django.http import JsonResponse
 
 
 def get_top_five(request):
+    """ returns formated API with top 5 flights """
     x = Flights.objects.first()
     top = x.top_five_flights()
     sorted_items = sorted(top.items(), key=lambda x: x[1], reverse=True)

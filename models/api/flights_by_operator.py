@@ -5,6 +5,12 @@ from ..tools import categorize_flights
 
 
 def get_flights_by_airoperator(request):
+    """ query_param: operator
+        query_param: start_date
+        query_param: end_date
+        returns flights API by dates (if no dates then all flights)
+        if not passed operator returns 404
+        """
     air_operator = request.GET.get('operator')
     start_time = request.GET.get('start_time')
     end_time = request.GET.get('end_time')
